@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 # Load data
-elements = pd.read_csv('periodic_table.csv')
+elements = pd.read_csv('input.csv')
 
 # Define layout
 table_style = """
