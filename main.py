@@ -2,8 +2,8 @@ import streamlit as st
 import json
 
 # Load the data
-with open("https://raw.githubusercontent.com/Bowserinator/Periodic-Table-JSON/master/PeriodicTableJSON.json") as f:
-    data = json.load(f)
+with open("input.json", "r") as file:
+    data = json.load(file)
     elements = data["elements"]
 
 # Define the columns to show
