@@ -1,9 +1,10 @@
 import streamlit as st
-import pandas as pd
+import json
 
 # Load the data
-data = pd.read_csv("https://raw.githubusercontent.com/Bowserinator/Periodic-Table-JSON/master/PeriodicTableJSON.json")
-elements = data["elements"]
+with open("https://raw.githubusercontent.com/Bowserinator/Periodic-Table-JSON/master/PeriodicTableJSON.json") as f:
+    data = json.load(f)
+    elements = data["elements"]
 
 # Define the columns to show
 columns = ["name", "symbol", "atomic_mass", "category", "appearance", "boil", "melt", "density", "discovered_by"]
