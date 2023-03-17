@@ -1,65 +1,79 @@
 import streamlit as st
 import pandas as pd
 
-# Load data
-elements = pd.read_csv('input.csv')
+# Load the periodic table data
+df = pd.read_csv('https://raw.githubusercontent.com/Bowserinator/Periodic-Table-JSON/master/PeriodicTableJSON.json')['elements']
+elements = {d['symbol']: d for d in df.to_dict('records')}
 
-# Define layout
-table_style = """
-<style>
-table {
-  border-collapse: collapse;
-  margin: auto;
-}
-td {
-  width: 50px;
-  height: 50px;
-  text-align: center;
-  border: 1px solid black;
-}
-.button {
-  background-color: #f2f2f2;
-  border: 1px solid #ccc;
-  color: black;
-  font-size: 16px;
-  padding: 10px 20px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  margin: 4px 2px;
-  cursor: pointer;
-}
-</style>
-"""
-element_style = """
-<style>
-h1 {
-  text-align: center;
-}
-</style>
+# Define the HTML template for the tooltip
+html_template = """
+<div style="background-color: #F4F4F4; padding: 10px;">
+    <h4 style="margin-top: 0px;">{name} ({symbol})</h4>
+    <p><b>Atomic number:</b> {number}</p>
+    <p><b>Atomic mass:</b> {atomic_mass}</p>
+    <p><b>Category:</b> {category}</p>
+    <p><b>Electron configuration:</b> {electron_configuration}</p>
+</div>
 """
 
-# Display periodic table
-st.markdown(table_style, unsafe_allow_html=True)
-table = "<table>"
-for i in range(1, 119):
-    element = elements[elements['atomic_number'] == i].iloc[0]
-    if element['symbol'] == '':
-        table += "<tr><td colspan='2'></td></tr>"
-    else:
-        button = f"<a href='#' class='button' onclick=\"element_key='{element['symbol']}'\">{element['symbol']}<br>{element['name']}</a>"
-        table += f"<tr><td>{button}</td><td>{element['atomic_number']}</td></tr>"
-table += "</table>"
-st.markdown(table, unsafe_allow_html=True)
+# Define the CSS style for the tooltip
+css_style = """
+<style>
+    /* Tooltip container */
+    .tooltip {
+        position: relative;
+        display: inline-block;
+        border-bottom: 1px dotted black;
+    }
 
-# Display element information
-st.markdown(element_style, unsafe_allow_html=True)
-element_key = st.session_state.get('element_key')
-if element_key:
-    element = elements[elements['symbol'] == element_key].iloc[0]
-    st.header(f"{element['name']} ({element['symbol']})")
-    st.write(f"Atomic number: {element['atomic_number']}")
-    st.write(f"Atomic mass: {element['atomic_mass']}")
-    st.write(f"Period: {element['period']}")
-    st.write(f"Group: {element['group']}")
-    st.write(f"Electron configuration: {element['electron_configuration']}")
+    /* Tooltip text */
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 200px;
+        background-color: #F4F4F4;
+        color: black;
+        text-align: center;
+        border-radius: 6px;
+        padding: 10px;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -100px;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    /* Tooltip text arrow */
+    .tooltip .tooltiptext::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: black transparent transparent transparent;
+    }
+
+    /* Show the tooltip text when you mouse over the tooltip container */
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
+</style>
+"""
+
+# Display the periodic table
+st.markdown(css_style, unsafe_allow_html=True)
+for row in range(1, 10):
+    for col in range(1, 19):
+        symbol = f'{col+((row-1)*18):03}'
+        element = elements.get(symbol, {})
+        if element:
+            tooltip_html = html_template.format(**element)
+            html = f'<div class="tooltip">{element["symbol"]}<span class="tooltiptext">{tooltip_html}</span></div>'
+            st.markdown(html, unsafe_allow_html=True)
+        else:
+            st.write('')
+
