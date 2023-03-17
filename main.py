@@ -36,11 +36,6 @@ element_style = """
 h1 {
   text-align: center;
 }
-img {
-  display: block;
-  margin: auto;
-  width: 200px;
-}
 </style>
 """
 
@@ -68,5 +63,3 @@ if element_key:
     st.write(f"Period: {element['period']}")
     st.write(f"Group: {element['group']}")
     st.write(f"Electron configuration: {element['electron_configuration']}")
-    st.image(f"images/{element['symbol']}.png", width=200)
-
