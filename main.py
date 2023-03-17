@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 # Load the periodic table data
-df = pd.read_csv('https://raw.githubusercontent.com/Bowserinator/Periodic-Table-JSON/master/PeriodicTableJSON.json')['elements']
+df = pd.read_csv('input.json')['elements']
 elements = {d['symbol']: d for d in df.to_dict('records')}
 
 # Define the HTML template for the tooltip
